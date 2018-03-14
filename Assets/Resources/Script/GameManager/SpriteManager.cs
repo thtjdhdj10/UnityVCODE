@@ -8,7 +8,6 @@ System.Collections.Generic.Dictionary<string, SpriteManager.SpriteAttribute>>>;
 
 public class SpriteManager : MonoBehaviour
 {
-
     public const bool PRINT_DEBUG = true;
 
     public int countLoadSprite;
@@ -28,12 +27,16 @@ public class SpriteManager : MonoBehaviour
 
     public TypeSpriteDictionary typeSpriteDic = new TypeSpriteDictionary();
 
-    public struct SpriteAttribute
+    public class SpriteAttribute
     {
         public Sprite sprite;
+
+        public bool isAnimation;
+
+        public RuntimeAnimatorController controller;
         public float speed;
         public int frameCount;
-        public float cycle;
+        public float length;
     }
 
     [SerializeField]
@@ -51,7 +54,62 @@ public class SpriteManager : MonoBehaviour
 
     const string EXCLUDE_KEYWORD = "@";
 
-    public void LoadSprite()
+    public static SpriteAttribute GetSpriteAttribute(string category, string name)
+    {
+        return GetSpriteAttribute(category, name, "");
+    }
+
+    public static SpriteAttribute GetSpriteAttribute(string category, string name, string status)
+    {
+        if (manager.typeSpriteDic.ContainsKey(category) == false)
+            return null;
+
+        if (manager.typeSpriteDic[category].ContainsKey(name) == false)
+            return null;
+
+        if (manager.typeSpriteDic[category][name].ContainsKey(status) == false)
+            return null;
+
+        return manager.typeSpriteDic[category][name][status];
+    }
+
+    public static float AssignSpriteAttribute(GameObject go, SpriteAttribute sa) // return length
+    {
+        float ret = 0f;
+
+        if(sa == null)
+            return ret;
+
+        if(sa.isAnimation == true &&
+            sa.controller != null)
+        {
+            Animator a = go.GetComponent<Animator>();
+            if (a == null)
+                a = go.AddComponent<Animator>();
+
+            a.runtimeAnimatorController = Instantiate(sa.controller);
+
+            a.speed = sa.speed;
+
+            a.Play("Entry");
+
+            ret = sa.length;
+        }
+        else
+        {
+            Animator a = go.GetComponent<Animator>();
+            if (a != null)
+                Destroy(a);
+
+            go.GetComponent<SpriteRenderer>().sprite = sa.sprite;
+        }
+
+        return ret;
+    }
+
+    //
+
+    private void LoadSprite()
     {
         countLoadSprite = 0;
 
@@ -63,21 +121,29 @@ public class SpriteManager : MonoBehaviour
 
         // Sprite Directory 이하의 Directory 들을 가져옴
         string[] targetDirectoryWithPath = System.IO.Directory.GetDirectories(fullPath);
+        List<string> targetDirectoryWithPathList = new List<string>(targetDirectoryWithPath);
+        targetDirectoryWithPathList.Add(fullPath);
 
-        for (int i = 0; i < targetDirectoryWithPath.Length; ++i)
+        for (int i = 0; i < targetDirectoryWithPathList.Count; ++i)
         {
             // directory 들 이하의 png file 들을 가져옴
-            string[] spriteNameWithPath = System.IO.Directory.GetFiles(targetDirectoryWithPath[i], "*.png");
+            string[] spriteNameWithPath = System.IO.Directory.GetFiles(targetDirectoryWithPathList[i], "*.png");
+
+            CustomLog.CompleteLog("Sprite Root: " + targetDirectoryWithPathList[i]);
 
             for (int j = 0; j < spriteNameWithPath.Length; ++j)
             {
-                if (spriteNameWithPath[j] == EXCLUDE_KEYWORD)
+                if (spriteNameWithPath[j].Substring(0,1) == EXCLUDE_KEYWORD)
                     continue;
 
                 // 4 파트로 나뉜 이름
                 string[] strType = { "", "", "", "" };
                 string[] splitName = GetSplitName(spriteNameWithPath[j]);
-                for (int k = 0; k < splitName.Length; ++k)
+
+                // 소문자로 설정
+                ToLowerNames(ref splitName);
+
+                for (int k = 0; k < Mathf.Min(4, splitName.Length); ++k)
                 {
                     strType[k] = splitName[k];
                 }
@@ -88,9 +154,19 @@ public class SpriteManager : MonoBehaviour
                 string resourceLoadName = GetLoadingName(spriteNameWithPath[j]);
                 sa.sprite = Resources.Load<Sprite>(resourceLoadName);
 
-                sa.frameCount = GetSpriteFrameCount(strType);
-                sa.speed = GetSpriteSpeed(strType, sa.frameCount);
-                sa.cycle = (1f / (float)spriteDefaultFramePerSec) / sa.speed * (float)(sa.frameCount - 1);
+                if(GetSpriteAttribute(strType) == "")
+                {
+                    sa.isAnimation = false;
+                }
+                else
+                {
+                    sa.isAnimation = true;
+
+                    sa.frameCount = GetSpriteFrameCount(strType);
+                    sa.speed = GetSpriteSpeed(strType);
+                    sa.length = (1f / (float)spriteDefaultFramePerSec) / sa.speed * (float)(sa.frameCount - 1);
+
+                }
 
                 CutSpriteAttribute(ref strType);
 
@@ -121,17 +197,47 @@ public class SpriteManager : MonoBehaviour
             }
         }
 
+        for (int i = 0; i < targetDirectoryWithPathList.Count; ++i)
+        {
+            string[] controllerNameWithPath = System.IO.Directory.GetFiles(targetDirectoryWithPathList[i], "*.controller");
+
+            // load 된 sprite 가 animation 이면 attribute 에 controller 추가
+            for (int k = 0; k < controllerNameWithPath.Length; ++k)
+            {
+                string[] strTypeController = { "", "", "" };
+                string[] splitControllerName = GetSplitName(controllerNameWithPath[k]);
+
+                // 소문자로 설정
+                ToLowerNames(ref splitControllerName);
+
+                for (int l = 0; l < Mathf.Min(3, splitControllerName.Length); ++l)
+                {
+                    strTypeController[l] = splitControllerName[l];
+                }
+
+                CutSpriteAttribute(ref strTypeController);
+
+                SpriteAttribute sa = GetSpriteAttribute(strTypeController[0], strTypeController[1], strTypeController[2]);
+
+                if (sa != null)
+                {
+                    if (sa.isAnimation == true)
+                    {
+                        string controllerLoadName = GetLoadingName(controllerNameWithPath[k]);
+
+                        sa.controller = Instantiate(Resources.Load<RuntimeAnimatorController>(controllerLoadName));
+                    }
+                }
+            }
+        }
+
         CustomLog.CompleteLog("Load Sprite Count: " + countLoadSprite);
     }
 
-    public static void SetSpriteCycleTime(ref SpriteAttribute sa, float time)
-    {
-        sa.cycle = time;
-        sa.speed = (1f / (float)spriteDefaultFramePerSec) / time * (float)(sa.frameCount - 1);
-    }
-
     // [speed]_strip[frame]
-    int GetSpriteFrameCount(string[] name)
+    // [speed] 는 배속을 인자로 받음. 기본값은 1
+    // return 값은 스프라이트 재생 간격 시간.
+    private int GetSpriteFrameCount(string[] name)
     {
         string attribute = GetSpriteAttribute(name);
         if (attribute == "")
@@ -144,37 +250,54 @@ public class SpriteManager : MonoBehaviour
         return System.Convert.ToInt32(attribute);
     }
 
-    float GetSpriteSpeed(string[] name, int frameCount)
+    private float GetSpriteSpeed(string[] name)
     {
         string attribute = GetSpriteAttribute(name);
         if (attribute == "")
-            return 1f;
+            return (1f / (float)spriteDefaultFramePerSec);
 
         int speedEndIndex = attribute.LastIndexOf("_strip");
 
         attribute = attribute.Substring(0, speedEndIndex);
 
-        int framePerSec = System.Convert.ToInt32(attribute);
-
-        float deltaTime = 1f / (float)framePerSec;
-
-        float speed = (1f / (float)spriteDefaultFramePerSec) / deltaTime;
-
-        return speed;
+        return System.Convert.ToSingle(attribute);
     }
 
-    void CutSpriteAttribute(ref string[] name)
+    private void CutSpriteAttribute(ref string[] name)
     {
-        for (int i = name.Length - 1; i >= 0; --i)
+        for (int i = 0; i < name.Length; ++i)
         {
-            if (name[i].Contains("_strip") == true)
+            if (name[i].Contains("_strip") == true ||
+                name[i] == "")
             {
-                name[i] = "";
+                switch(i)
+                {
+                    case 0:
+                        {
+                            name = new string[] { "", "", "" };
+                        }
+                        return;
+                    case 1:
+                        {
+                            name = new string[] { name[0], "", "" };
+                        }
+                        return;
+                    case 2:
+                        {
+                            name = new string[] { name[0], name[1], "" };
+                        }
+                        return;
+                    case 3:
+                        {
+                            name = new string[] { name[0], name[1], name[2] };
+                        }
+                        return;
+                }
             }
         }
     }
 
-    string GetSpriteAttribute(string[] name)
+    private string GetSpriteAttribute(string[] name)
     {
         for (int i = name.Length - 1; i >= 0; --i)
         {
@@ -188,7 +311,7 @@ public class SpriteManager : MonoBehaviour
     }
 
 
-    string[] GetSplitName(string name)
+    private string[] GetSplitName(string name)
     {
         string[] splitName = name.Split('/', '\\');
 
@@ -199,7 +322,15 @@ public class SpriteManager : MonoBehaviour
         return originName.Split(' ');
     }
 
-    string GetLoadingName(string name)
+    private void ToLowerNames(ref string[] name)
+    {
+        for (int i = 0; i < name.Length; ++i)
+        {
+            name[i] = name[i].ToLower();
+        }
+    }
+
+    private string GetLoadingName(string name)
     {
         // / or \ 로 split
         string[] splitName = name.Split('/', '\\');
@@ -223,6 +354,4 @@ public class SpriteManager : MonoBehaviour
         }
         return loadingName.Split('.')[0];
     }
-
-    //
 }

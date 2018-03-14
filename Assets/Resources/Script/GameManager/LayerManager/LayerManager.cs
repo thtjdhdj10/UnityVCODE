@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class LayerManager : MonoBehaviour {
+public class LayerManager {
     
     public const int MaxLayerCount = 32;
 
-    void Awake()
+    LayerManager()
     {
         for (int i = 0; i < MaxLayerCount; i++)
         {
