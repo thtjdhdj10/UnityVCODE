@@ -18,6 +18,8 @@ public class MovementComponent : UnitComponent
 
     public MovementType movementType;
 
+    public float originSpeed;
+
     [SerializeField]
     private float speed;
     public float Speed
@@ -34,6 +36,17 @@ public class MovementComponent : UnitComponent
                 speed = 0f;
         }
     }
+
+    public enum SpeedModulateType
+    {
+        BY_TARGET_LOST,
+        BY_DEBUFF,
+    }
+
+    // https://answers.unity.com/questions/642431/dictionary-in-inspector.html
+    public Dictionary<SpeedModulateType, float> speedModulateDic = new Dictionary<SpeedModulateType, float>();
+
+    public float targetLostSpeed = 0.5f;
 
     [SerializeField]
     private float direction;
@@ -83,6 +96,8 @@ public class MovementComponent : UnitComponent
     public float dodgeRemainDelay;
 
     // TODO: 겹쳐있는 동안, 겹친 정도에 따라, 겹치지 않는 방향으로 아주 약간씩 이동시키는 로직 추가
+    // 그 로직을 Bounce Action - Block 에서 사용하도록 할 것임
+    // 아니 그냥 거기에 구현하는게 맞나?
 
     public override void Init()
     {
@@ -90,21 +105,21 @@ public class MovementComponent : UnitComponent
 
         if(initRotateToTarget == true)
         {
-            if (owner.defaultTarget != null)
-            {
-                Direction = VEasyCalculator.GetDirection(owner, owner.defaultTarget);
-            }
-            else
-            {
-                if (owner.SearchTarget() == true)
-                    Direction = VEasyCalculator.GetDirection(owner, owner.defaultTarget);
-            }
+            UpdateTarget();
+
+            Direction = VEasyCalculator.GetDirection(owner, componentTarget);
         }
-
-
     }
 
-    public virtual void OnUpdateDirection()
+    public void UpdateTarget()
+    {
+        if(useDefaultTarget == true)
+        {
+            componentTarget = owner.defaultTarget;
+        }
+    }
+
+    public void OnUpdateDirection()
     {
         if (sprAngleToDir == true)
             SetSpriteAngle();
@@ -122,6 +137,15 @@ public class MovementComponent : UnitComponent
 
     private void MovementProcess(MovementType _movementType)
     {
+        Speed = originSpeed;
+
+        foreach (float speedModulateFactor in speedModulateDic.Values)
+        {
+            Speed = Speed * speedModulateFactor;
+        }
+
+        UpdateTarget();
+
         switch (_movementType)
         {
             case MovementType.STRAIGHT:
@@ -136,15 +160,19 @@ public class MovementComponent : UnitComponent
                 break;
             case MovementType.TURN_LERP:
                 {
-                    if (owner.defaultTarget == null)
+                    if (componentTarget == null)
                     {
                         MovementProcess(MovementType.STRAIGHT);
+
+                        speedModulateDic[SpeedModulateType.BY_TARGET_LOST] = targetLostSpeed;
                         return;
                     }
 
+                    speedModulateDic[SpeedModulateType.BY_TARGET_LOST] = 1f;
+
                     float moveDis = speed * Time.fixedDeltaTime;
 
-                    float dirToTarget = VEasyCalculator.GetDirection(owner, owner.defaultTarget);
+                    float dirToTarget = VEasyCalculator.GetDirection(owner, componentTarget);
 
                     float deltaDir = VEasyCalculator.GetLerpDirection(
                         direction, dirToTarget, turnFactor * Time.fixedDeltaTime) - direction;
@@ -162,17 +190,21 @@ public class MovementComponent : UnitComponent
                 break;
             case MovementType.TURN_LERP_BY_DISTANCE:
                 {
-                    if (owner.defaultTarget == null)
+                    if (componentTarget == null)
                     {
                         MovementProcess(MovementType.STRAIGHT);
+
+                        speedModulateDic[SpeedModulateType.BY_TARGET_LOST] = targetLostSpeed;
                         return;
                     }
 
+                    speedModulateDic[SpeedModulateType.BY_TARGET_LOST] = 1f;
+
                     float moveDis = speed * Time.fixedDeltaTime;
 
-                    float dirToPlayer = VEasyCalculator.GetDirection(owner, owner.defaultTarget);
+                    float dirToPlayer = VEasyCalculator.GetDirection(owner, componentTarget);
 
-                    float disToPlayer = VEasyCalculator.GetDistance(owner.defaultTarget, owner);
+                    float disToPlayer = VEasyCalculator.GetDistance(componentTarget, owner);
 
                     float deltaDir = VEasyCalculator.GetLerpDirection(
                         direction, dirToPlayer, turnFactor * Time.fixedDeltaTime,
@@ -191,15 +223,19 @@ public class MovementComponent : UnitComponent
                 break;
             case MovementType.TURN_REGULAR:
                 {
-                    if (owner.defaultTarget == null)
+                    if (componentTarget == null)
                     {
                         MovementProcess(MovementType.STRAIGHT);
+
+                        speedModulateDic[SpeedModulateType.BY_TARGET_LOST] = targetLostSpeed;
                         return;
                     }
 
+                    speedModulateDic[SpeedModulateType.BY_TARGET_LOST] = 1f;
+
                     float moveDis = speed * Time.fixedDeltaTime;
 
-                    float dirToTarget = VEasyCalculator.GetDirection(owner, owner.defaultTarget);
+                    float dirToTarget = VEasyCalculator.GetDirection(owner, componentTarget);
 
                     Direction = VEasyCalculator.GetTurningDirection(
                         direction, dirToTarget, turnFactor * Time.fixedDeltaTime);
@@ -212,17 +248,21 @@ public class MovementComponent : UnitComponent
                 break;
             case MovementType.TURN_REGULAR_DISTANCE:
                 {
-                    if (owner.defaultTarget == null)
+                    if (componentTarget == null)
                     {
                         MovementProcess(MovementType.STRAIGHT);
+
+                        speedModulateDic[SpeedModulateType.BY_TARGET_LOST] = targetLostSpeed;
                         return;
                     }
 
+                    speedModulateDic[SpeedModulateType.BY_TARGET_LOST] = 1f;
+
                     float moveDis = speed * Time.fixedDeltaTime;
 
-                    float dirToPlayer = VEasyCalculator.GetDirection(owner, owner.defaultTarget);
+                    float dirToPlayer = VEasyCalculator.GetDirection(owner, componentTarget);
 
-                    float disToPlayer = VEasyCalculator.GetDistance(owner.defaultTarget, owner);
+                    float disToPlayer = VEasyCalculator.GetDistance(componentTarget, owner);
 
                     Direction = VEasyCalculator.GetTurningDirection(
                         direction, dirToPlayer, turnFactor * Time.fixedDeltaTime,

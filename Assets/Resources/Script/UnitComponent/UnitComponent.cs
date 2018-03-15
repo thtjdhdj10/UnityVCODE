@@ -14,11 +14,21 @@ public class UnitComponent : MonoBehaviour
     [System.NonSerialized]
     public ComponentType type;
 
+    public Unit componentTarget;
+
+    public bool useDefaultTarget = true;
+
     public virtual void Init()
     {
         owner = GetComponent<Unit>();
 
         activatedDic[ActivatingType.OWNER] = owner.Activated;
+
+        componentTarget = null;
+        if (useDefaultTarget == true)
+        {
+            componentTarget = owner.defaultTarget;
+        }
     }
 
     // UnitComponent 들은 activate 에 의해 on/off 될 수 있음.
