@@ -15,6 +15,8 @@ public class ActionPlayerController : Action
 
     bool attackInput = false;
 
+    public bool rotateToCursor = true;
+
     public ActionPlayerController()
     {
         dirKeyDic[WorldGeneral.Direction.LEFT] = KeyManager.CommandType.MOVE_LEFT;
@@ -28,6 +30,11 @@ public class ActionPlayerController : Action
         dirRevdirDic[WorldGeneral.Direction.DOWN] = WorldGeneral.Direction.UP;
     }
 
+    private void Update()
+    {
+        RotateToCursor();
+    }
+
     public override void Activate(KeyInput ki)
     {
         if (ki.IsValid() == false)
@@ -38,7 +45,6 @@ public class ActionPlayerController : Action
         MovementProcess(ki);
 
         ProjectileProcess(ki);
-
     }
 
     private void UpdateKeyInput(KeyManager.CommandType command, KeyManager.KeyPressType type)
@@ -72,10 +78,16 @@ public class ActionPlayerController : Action
 
         attackInput = false;
 
-        if(command == KeyManager.CommandType.COMMAND_ATTACK &&
-            type == KeyManager.KeyPressType.PRESS)
+        if (command == KeyManager.CommandType.COMMAND_ATTACK &&
+            (type == KeyManager.KeyPressType.DOWN ||
+            type == KeyManager.KeyPressType.PRESS))
         {
             attackInput = true;
+        }
+        if (command == KeyManager.CommandType.COMMAND_ATTACK &&
+            type == KeyManager.KeyPressType.UP)
+        {
+            attackInput = false;
         }
 
     }
@@ -112,8 +124,18 @@ public class ActionPlayerController : Action
         for(int i = 0; i < projectiles.Length; ++i)
         {
             projectiles[i].activatedDic[UnitComponent.ActivatingType.CONTROLLER] = attackInput;
-            projectiles[i].targetPosition = Input.mousePosition;
-            Debug.Log(Input.mousePosition);
+            projectiles[i].targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        }
+    }
+
+    private void RotateToCursor()
+    {
+        if(rotateToCursor == true)
+        {
+            Vector2 playerPosition = new Vector2(transform.position.x, transform.position.y);
+            Vector2 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            transform.eulerAngles = new Vector3(0, 0,
+                VEasyCalculator.GetDirection(playerPosition, mouseWorldPosition) + SpriteManager.spriteDefaultRotation);
         }
     }
 }

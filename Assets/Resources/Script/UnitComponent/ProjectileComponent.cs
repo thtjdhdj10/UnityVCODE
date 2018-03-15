@@ -6,6 +6,12 @@ public class ProjectileComponent : UnitComponent
 {
     public Bullet bullet;
 
+    public bool isEnableAutoFire = true;
+
+    public int projectCount = 1;
+
+    public float projectDirection = 0f;
+
     public float cooldown;
     private float remainCooldown;
     public float RemainCooldown
@@ -18,8 +24,11 @@ public class ProjectileComponent : UnitComponent
         {
             remainCooldown = value;
 
-            if(remainCooldown < 0f)
+            if(remainCooldown <= 0f)
             {
+                if (IsActivated() == false)
+                    return;
+
                 remainCooldown = cooldown;
 
                 Fire();
@@ -53,35 +62,59 @@ public class ProjectileComponent : UnitComponent
 
     private void CooldownProcess()
     {
-        if (IsActivated() == false)
+        if (isEnableAutoFire == false)
             return;
 
-        if (RemainCooldown > 0f)
-        {
-            RemainCooldown -= Time.fixedDeltaTime;
-        }
+        RemainCooldown -= Time.fixedDeltaTime;
     }
 
-    public bool Fire()
+    public void Fire()
+    {
+        if (projectCount == 1)
+        {
+            FireEach(new Vector2(0, 0), 0f);
+        }
+        else
+        {
+            for (int i = 0; i < projectCount; ++i)
+            {
+                float relativeDir = projectDirection / (float)(projectCount - 1) * i - (float)projectDirection * 0.5f;
+
+                FireEach(new Vector2(0, 0), relativeDir);
+            }
+        }
+
+
+    }
+
+    private void FireEach(Vector2 relativePosition, float relativeDirection)
     {
         Bullet _bullet = Instantiate(bullet);
 
         if (_bullet == null)
         {
             Debug.LogWarning("Invalid Bullet Type");
-            return false;
         }
 
-        switch(targetType)
+        switch (targetType)
         {
             case TargetType.UNIT:
                 {
                     _bullet.defaultTarget = owner.defaultTarget;
-                    _bullet.Init(this);
+                }
+                break;
+            case TargetType.LOCATION:
+                {
+
+                }
+                break;
+            case TargetType.NONE:
+                {
+
                 }
                 break;
         }
 
-        return true;
+        _bullet.Init(this, relativePosition, relativeDirection);
     }
 }
