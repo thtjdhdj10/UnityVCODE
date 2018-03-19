@@ -14,6 +14,7 @@ public class Unit : MyObject
     // 최대한 게임에 종속되지 않게 하고 싶었지만 어쩔 수 없음.
     // 하지만 그렇게 나쁜 구조는 아닌듯..
     // 아니면 Editor 를 써서 노출시키는 방법도 있긴함. 근데 그러면 Unit마다 Editor 만들어야될거같은데. 그건 좀..
+    // IsSubClassOf 사용하도록 수정
     public enum UnitType
     {
         NONE = 0,
