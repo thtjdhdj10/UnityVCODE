@@ -46,11 +46,11 @@ public class UnitComponent : MonoBehaviour
     {
         foreach(bool activated in activatedDic.Values)
         {
-            if (activated == true)
-                return true;
+            if (activated == false)
+                return false;
         }
 
-        return false;
+        return true;
     }
 
     public enum ComponentType

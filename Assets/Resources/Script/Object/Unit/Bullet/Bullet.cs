@@ -7,7 +7,7 @@ public class Bullet : Unit
     [System.NonSerialized]
     public Unit owner;
 
-    public virtual void Init(ProjectileComponent projector)
+    public virtual void Init(ProjectileComponent projector, Vector2 relativePosition, float relativeDirection)
     {
         owner = projector.owner;
         MovementComponent ownerMovement = owner.GetComponent<MovementComponent>();
@@ -19,20 +19,22 @@ public class Bullet : Unit
         {
             case ProjectileComponent.TargetType.LOCATION:
                 {
-                    movement.Direction = VEasyCalculator.GetDirection(owner.transform.position, projector.targetPosition);
+                    movement.Direction = VEasyCalculator.GetDirection(owner.transform.position, projector.targetPosition) + relativeDirection;
                 }
                 break;
             case ProjectileComponent.TargetType.UNIT:
-            case ProjectileComponent.TargetType.NONE:
                 {
 
                 }
                 break;
+            case ProjectileComponent.TargetType.NONE:
+                {
+                    movement.Direction = ownerMovement.Direction + relativeDirection;
+                }
+                break;
         }
 
-        movement.Direction = ownerMovement.Direction;
-
-        gameObject.transform.position = owner.transform.position;
+        gameObject.transform.position = owner.transform.position + new Vector3(relativePosition.x, relativePosition.y, 0);
     }
 
 }
