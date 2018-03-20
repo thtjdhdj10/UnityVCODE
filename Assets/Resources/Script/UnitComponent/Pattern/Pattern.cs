@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Pattern : MonoBehaviour
+public abstract class Pattern : MonoBehaviour
 {
     public bool patternActivating = false;
 
     public void PatternActivate()
     {
-        StartCoroutine(StartPattern());
+        StartCoroutine(OnStartPattern());
     }
 
-    protected virtual IEnumerator StartPattern()
-    {
-        patternActivating = true;
+    protected abstract IEnumerator OnStartPattern();
+    //{
+    //    patternActivating = true;
 
-        yield return new WaitForSeconds(3f);
+    //    yield return new WaitForSeconds(3f);
 
-        patternActivating = false;
-    }
+    //    patternActivating = false;
+    //}
 
 
 }
