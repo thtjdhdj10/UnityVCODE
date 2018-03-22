@@ -40,7 +40,7 @@ public class PatternComponent : UnitComponent
         }
         else
         {
-            if (patternQueue.Peek().patternActivating == false)
+            if (patternQueue.Peek().isPatternRunning == false)
             {
                 lastActivatedPattern = patternQueue.Dequeue();
                 lastActivatedPattern.PatternActivate();

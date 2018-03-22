@@ -5,21 +5,32 @@ using UnityEngine.Events;
 
 public abstract class Pattern : MonoBehaviour
 {
-    public bool patternActivating = false;
+    public Unit owner;
+
+    public bool isPatternRunning = false;
+
+    public bool blockBulletFire = false;
+
+    protected Pattern prevPattern;
+
+    private void Awake()
+    {
+        if (owner == null)
+            owner = GetComponent<Unit>();
+    }
 
     public void PatternActivate()
     {
         StartCoroutine(OnStartPattern());
     }
 
+    public void PatternActivate(Pattern _prevPattern)
+    {
+        prevPattern = _prevPattern;
+        StartCoroutine(OnStartPattern());
+    }
+
     protected abstract IEnumerator OnStartPattern();
-    //{
-    //    patternActivating = true;
-
-    //    yield return new WaitForSeconds(3f);
-
-    //    patternActivating = false;
-    //}
 
 
 }
