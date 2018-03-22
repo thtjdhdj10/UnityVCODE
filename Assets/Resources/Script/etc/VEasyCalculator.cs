@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public class VEasyCalculator
 {
-    public static void ChangeKey<TKey, TValue>(Dictionary<TKey, TValue> dic,
-                                      TKey fromKey, TKey toKey)
+    public static void ChangeKey<TKey, TValue>(
+        Dictionary<TKey, TValue> dic, TKey fromKey, TKey toKey)
     {
         TValue value = dic[fromKey];
         dic.Remove(fromKey);
@@ -56,6 +56,13 @@ public class VEasyCalculator
     public static float GetDistance(Unit a, Unit b)
     {
         return GetDeltaPosition(a, b).SqrMagnitude();
+    }
+
+    public static float SelectFloat(bool isA, float A, float B)
+    {
+        if (isA == true)
+            return A;
+        else return B;
     }
 
     //public static bool CheckOutside(Unit a)

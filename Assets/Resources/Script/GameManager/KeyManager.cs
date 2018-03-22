@@ -81,13 +81,13 @@ public class KeyManager : MonoBehaviour {
 
                 for (int j = 0; j < controlableList.Count; ++j)
                 {
-                    var controler = controlableList[j].GetComponent<ControlComponent>();
-                    if (controler == null)
+                    var controller = controlableList[j].GetComponent<ControlComponent>();
+                    if (controller == null)
                         continue;
 
                     CommandType command = keySettings[keySetNumber][keyCode];
 
-                    controler.ReceiveCommand(command, type);
+                    controller.ReceiveCommand(command, type);
                 }
             }  
         }

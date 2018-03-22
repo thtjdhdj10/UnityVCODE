@@ -114,6 +114,7 @@ public class ActionPlayerController : Action
         }
 
         movable.Speed = speed;
+        movable.originSpeed = speed;
         movable.moveDir = movementInput;
     }
 

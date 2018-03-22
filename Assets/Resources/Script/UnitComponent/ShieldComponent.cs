@@ -8,7 +8,7 @@ public class ShieldComponent : UnitComponent
     {
         base.Init();
 
-        restTimeToShield = 0f;
+        remainChargeDelay = 0f;
 
         ShieldCount = 0;
 
@@ -43,18 +43,29 @@ public class ShieldComponent : UnitComponent
         }
     }
 
-    public float timeToShield;
+    public float shieldChargeDelay;
 
-    private float restTimeToShield;
-    public float RestTimeToShield
+    private float remainChargeDelay;
+    private float RemainChargeDelay
     {
         get
         {
-            return restTimeToShield;
+            return remainChargeDelay;
         }
         set
         {
-            restTimeToShield = VEasyCalculator.MinMax(value, 0f, timeToShield);
+            remainChargeDelay = value;
+
+            if(remainChargeDelay < 0f)
+            {
+                ShieldCount += 1;
+
+                remainChargeDelay = 0f;
+
+                return;
+            }
+
+            remainChargeDelay = Mathf.Min(value, shieldChargeDelay);
         }
     }
 
@@ -67,16 +78,7 @@ public class ShieldComponent : UnitComponent
 
         if(ShieldCount < maxShieldCount)
         {
-            if(RestTimeToShield < timeToShield)
-            {
-                RestTimeToShield += Time.fixedDeltaTime;
-            }
-            else
-            {
-                ShieldCount += 1;
-
-                RestTimeToShield = 0f;
-            }
+            RemainChargeDelay -= Time.fixedDeltaTime;
         }
     }
 

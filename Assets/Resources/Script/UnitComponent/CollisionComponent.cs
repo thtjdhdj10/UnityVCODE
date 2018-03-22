@@ -4,6 +4,8 @@ using System.Reflection;
 
 public class CollisionComponent : UnitComponent
 {
+    public Collider2D mainCollider;
+
     protected virtual void OnTriggerEnter2D(Collider2D collider)
     {
         if (IsActivated() == false)
@@ -11,6 +13,9 @@ public class CollisionComponent : UnitComponent
 
         CollisionComponent target = collider.GetComponent<CollisionComponent>();
         if (target == null)
+            return;
+
+        if (target.mainCollider != collider)
             return;
 
         //if (target.gameObject.activeInHierarchy == false)
@@ -68,6 +73,9 @@ public class CollisionComponent : UnitComponent
         base.Init();
 
         currentHP = maxHP;
+
+        if (mainCollider == null)
+            mainCollider = GetComponent<Collider2D>();
     }
 
     public int damage;

@@ -8,6 +8,21 @@ public class Module : DynamicUnit
 
     public Unit moduleOwner;
 
+    private bool enableHoverMovement = true;
+    public bool EnableHoverMovement
+    {
+        get
+        {
+            return enableHoverMovement;
+        }
+        set
+        {
+            enableHoverMovement = value;
+
+            hoverMovementComponent.activatedDic[MovementComponent.ActivatingType.DEFAULT_TOGGLE] = value;
+        }
+    }
+
     private void Awake()
     {
         if(hoverMovementComponent == null)
@@ -18,8 +33,8 @@ public class Module : DynamicUnit
 
             hoverMovementComponent.turnFactor = 1f;
             hoverMovementComponent.disFactor = 1f;
-            hoverMovementComponent.maxTurnByDis = 2f;
-            hoverMovementComponent.minTurnByDis = 0.5f;
+            hoverMovementComponent.maxTurnByDis = 1f;
+            hoverMovementComponent.minTurnByDis = 0f;
         }
     }
 
@@ -28,8 +43,6 @@ public class Module : DynamicUnit
         moduleOwner = _moduleOwner;
     }
 
-    public void SetHover(bool enableHover)
-    {
-//        GetComponent<MovementComponent>().
-    }
+
+
 }

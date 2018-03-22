@@ -2,8 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pattern : MonoBehaviour
+public class Pattern
 {
+    public void Activated()
+    {
+
+    }
+
+
 
 
 }

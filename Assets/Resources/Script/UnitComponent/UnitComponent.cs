@@ -40,6 +40,7 @@ public class UnitComponent : MonoBehaviour
     {
         OWNER,
         CONTROLLER,
+        DEFAULT_TOGGLE,
     }
 
     public bool IsActivated()

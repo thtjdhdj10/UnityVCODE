@@ -9,7 +9,7 @@ public class MovementComponentEditor : Editor
     public bool advancedFold = false;
 
     SerializedProperty movementTypeProp;
-    SerializedProperty speedProp;
+    SerializedProperty originSpeedProp;
 
     SerializedProperty turnFactorProp;
 
@@ -24,37 +24,20 @@ public class MovementComponentEditor : Editor
     SerializedProperty sprAngleToDirProp;
 
 
-
-    string movementTypeName = "movementType";
-    string speedName = "speed";
-
-    string turnFactorName = "turnFactor";
-
-    string disFactorName = "disFactor";
-    string maxTurnByDisName = "maxTurnByDis";
-    string minTurnByDisName = "minTurnByDis";
-
-    // Advanced
-
-    string minTurnFactorName = "minTurnFactor";
-    string initRotateToTargetName = "initRotateToTarget";
-    string sprAngleToDirName = "sprAngleToDir";
-
-
     void OnEnable()
     {
-        movementTypeProp = serializedObject.FindProperty(movementTypeName);
-        speedProp = serializedObject.FindProperty(speedName);
+        movementTypeProp = serializedObject.FindProperty("movementType");
+        originSpeedProp = serializedObject.FindProperty("originSpeed");
 
-        turnFactorProp = serializedObject.FindProperty(turnFactorName);
+        turnFactorProp = serializedObject.FindProperty("turnFactor");
 
-        disFactorProp = serializedObject.FindProperty(disFactorName);
-        maxTurnByDisProp = serializedObject.FindProperty(maxTurnByDisName);
-        minTurnByDisProp = serializedObject.FindProperty(minTurnByDisName);
+        disFactorProp = serializedObject.FindProperty("disFactor");
+        maxTurnByDisProp = serializedObject.FindProperty("maxTurnByDis");
+        minTurnByDisProp = serializedObject.FindProperty("minTurnByDis");
 
-        minTurnFactorProp = serializedObject.FindProperty(minTurnFactorName);
-        initRotateToTargetProp = serializedObject.FindProperty(initRotateToTargetName);
-        sprAngleToDirProp = serializedObject.FindProperty(sprAngleToDirName);
+        minTurnFactorProp = serializedObject.FindProperty("minTurnFactor");
+        initRotateToTargetProp = serializedObject.FindProperty("initRotateToTarget");
+        sprAngleToDirProp = serializedObject.FindProperty("sprAngleToDir");
 
     }
 
@@ -69,7 +52,7 @@ public class MovementComponentEditor : Editor
         // target 은 값을 가져오는 용도로만 사용할 것
         MovementComponent movable = target as MovementComponent;
 
-        EditorGUILayout.PropertyField(speedProp);
+        EditorGUILayout.PropertyField(originSpeedProp);
 
         EditorGUILayout.Space();
 

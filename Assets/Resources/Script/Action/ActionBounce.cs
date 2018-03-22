@@ -14,7 +14,6 @@ public class ActionBounce : Action
         REVERSE, // 방향 180도 전환
         WALL_REFLECT, // 거울반사
         WALL_DESTROY, // 벽충돌 시 1초후 destroy
-        BLOCK, // 길막만 함
     }
 
     public Type type;
@@ -126,11 +125,62 @@ public class ActionBounce : Action
                     ownerMovable.Direction = dirToTarget + 180f;
                 }
                 break;
-            case Type.BLOCK:
-                {
-                    // TODO: position 만 충돌 반대 방향으로 밈
-                }
-                break;
+            //case Type.WALL_BLOCK:
+            //    {
+            //        Wall hitWall = hr.target as Wall;
+            //        if (hitWall == null)
+            //            return;
+
+            //        float wallScale = VEasyCalculator.SelectFloat(
+            //            (hitWall.direction == WorldGeneral.Direction.UP ||
+            //            hitWall.direction == WorldGeneral.Direction.DOWN),
+
+            //            wallScale = hitWall.GetComponent<BoxCollider2D>().size.y,
+            //            wallScale = hitWall.GetComponent<BoxCollider2D>().size.x);
+
+            //        float ownerScale = 0f;
+
+            //        CircleCollider2D ownerCircleCollider = owner.GetComponent<CircleCollider2D>();
+            //        if (ownerCircleCollider != null)
+            //        {
+            //            ownerScale = ownerCircleCollider.radius;
+            //        }
+            //        else
+            //        {
+            //            BoxCollider2D ownerBoxCollider = owner.GetComponent<BoxCollider2D>();
+            //            if (ownerBoxCollider != null)
+            //            {
+
+            //                ownerScale = VEasyCalculator.SelectFloat(
+            //                    (hitWall.direction == WorldGeneral.Direction.UP ||
+            //                    hitWall.direction == WorldGeneral.Direction.DOWN),
+
+            //                    ownerScale = ownerBoxCollider.size.y,
+            //                    ownerScale = ownerBoxCollider.size.x);
+            //            }
+            //        }
+
+            //        Vector3 targetPosition = hr.owner.transform.position;
+
+            //        switch (hitWall.direction)
+            //        {
+            //            case WorldGeneral.Direction.UP:
+            //                targetPosition.y = hitWall.transform.position.y - (wallScale - ownerScale);
+            //                break;
+            //            case WorldGeneral.Direction.DOWN:
+            //                targetPosition.y = hitWall.transform.position.y + (wallScale - ownerScale);
+            //                break;
+            //            case WorldGeneral.Direction.LEFT:
+            //                targetPosition.x = hitWall.transform.position.x + (wallScale - ownerScale);
+            //                break;
+            //            case WorldGeneral.Direction.RIGHT:
+            //                targetPosition.x = hitWall.transform.position.x - (wallScale - ownerScale);
+            //                break;
+            //        }
+
+            //        hr.owner.transform.position = targetPosition;
+            //    }
+            //    break;
         }
     }
 

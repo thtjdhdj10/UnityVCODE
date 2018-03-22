@@ -9,6 +9,8 @@ using System.Reflection;
 [CanEditMultipleObjects]
 public class CollisionComponentEditor : Editor
 {
+    SerializedProperty mainColliderProp;
+
     SerializedProperty originStatusProp;
     
     SerializedProperty isHittableProp;
@@ -34,7 +36,9 @@ public class CollisionComponentEditor : Editor
         //CollisionComponent c = target as CollisionComponent;
         //if (c.originStatus == null)
         //    c.originStatus = CreateInstance<CollisionComponent.Status>();
-        
+
+        mainColliderProp = serializedObject.FindProperty("mainCollider");
+
         isHittableProp = serializedObject.FindProperty("isHittable");
 
         isBeHittableProp = serializedObject.FindProperty("isBeHittable");
@@ -64,6 +68,10 @@ public class CollisionComponentEditor : Editor
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
+
+        EditorGUILayout.PropertyField(mainColliderProp);
+
+        EditorGUILayout.Space();
 
         EditorGUILayout.PropertyField(isHittableProp);
 

@@ -103,17 +103,27 @@ public class MovementComponent : UnitComponent
     {
         base.Init();
 
+        if(owner == null)
+        {
+            owner = GetComponent<Unit>();
+        }
+
         if(initRotateToTarget == true)
         {
             UpdateTarget();
 
-            Direction = VEasyCalculator.GetDirection(owner, componentTarget);
+            if (componentTarget != null &&
+                owner != null)
+            {
+                Direction = VEasyCalculator.GetDirection(owner, componentTarget);
+            }
         }
     }
 
     public void UpdateTarget()
     {
-        if(useDefaultTarget == true)
+        if(useDefaultTarget == true &&
+            owner != null)
         {
             componentTarget = owner.defaultTarget;
         }
