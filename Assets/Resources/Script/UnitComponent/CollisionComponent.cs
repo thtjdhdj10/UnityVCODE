@@ -29,19 +29,19 @@ public class CollisionComponent : UnitComponent
         DamageProcess(target);
     }
 
-    public void DamageProcess(CollisionComponent target)
+    public void DamageProcess(CollisionComponent col)
     {
         if (isHittable == true &&
-            target.isBeHittable == true)
+            col.isBeHittable == true)
         {
             if (IsImmune() == true)
                 return;
 
-            List<Unit.UnitType> targetTypes = Unit.GetChildrenType(owner, targetType);
+            System.Type targetType = System.Type.GetType(targetTypeName);
 
-            if (targetTypes.Contains(target.owner.unitType) == true)
+            if (targetType.IsSubclassOf(col.type.GetType()) == true)
             {
-                target.BeHit(this);
+                col.BeHit(this);
             }
         }
     }
@@ -134,7 +134,7 @@ public class CollisionComponent : UnitComponent
 
     public bool isHittable;
 
-    public Unit.UnitType targetType; // TODO editor 로, is hittable 이 true일 때만 노출
+    public string targetTypeName; // TODO editor 로, is hittable 이 true일 때만 노출
 
     public DamageEffectType damageEffectType;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ActionBounce : Action
 {
-    public Unit.UnitType targetType;
+    public string targetTypeName;
 
     public enum Type
     {
@@ -32,15 +32,17 @@ public class ActionBounce : Action
     {
         Unit owner = GetComponent<Unit>();
 
-        if (Unit.GetChildrenType(owner, targetType).Contains(hr.target.unitType) == false)
-        {
-            // target type 과 대상 type 이 NONE 인 경우는 유효한 충돌로 인정
-            if(targetType != Unit.UnitType.NONE ||
-                hr.target.unitType != Unit.UnitType.NONE)
-            {
-                return;
-            }
-        }
+        System.Type bounceTargetType =
+            System.Type.GetType(hr.owner.defaultTargetTypeName); // Bounce 처리할 대상의 타입
+
+        if (bounceTargetType == null)
+            bounceTargetType = System.Type.GetType(targetTypeName);
+
+        if (bounceTargetType == null)
+            return;
+
+        if(bounceTargetType.IsSubclassOf(hr.target.GetType()) == false)
+            return;
 
         MovementComponent ownerMovable = hr.owner.GetComponent<MovementComponent>();
 
