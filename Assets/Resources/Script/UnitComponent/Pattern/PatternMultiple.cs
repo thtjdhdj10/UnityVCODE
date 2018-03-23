@@ -12,18 +12,24 @@ public class PatternMultiple : Pattern
         public Pattern pattern;
     }
 
-    public PatternTimeStamp[] patternTimeStamps;
+    public List<PatternTimeStamp> patternTimeStamps = new List<PatternTimeStamp>();
 
-    protected override IEnumerator OnStartPattern()
+    protected override IEnumerator PatternFramework()
     {
-        for (int i = 0; i < patternTimeStamps.Length; ++i)
+        for(int i = 0; i < patternTimeStamps.Count;++i)
         {
             yield return new WaitForSeconds(patternTimeStamps[i].waitForActivate);
 
-            if (i > 0)
-                patternTimeStamps[i].pattern.PatternActivate(patternTimeStamps[i - 1].pattern);
-            else
-                patternTimeStamps[i].pattern.PatternActivate();
+            if (i < patternTimeStamps.Count)
+            {
+                if (patternTimeStamps[i].pattern != null)
+                {
+                    if (i > 0)
+                        patternTimeStamps[i].pattern.PatternActivate(patternTimeStamps[i - 1].pattern);
+                    else
+                        patternTimeStamps[i].pattern.PatternActivate();
+                }
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ public class PatternParallelFire : PatternAttachable
     public float delay = 0.1f;
     public float distance = 0.1f;
 
-    protected override IEnumerator OnStartPattern()
+    protected override IEnumerator PatternFramework()
     {
         isPatternRunning = true;
 
@@ -44,6 +44,7 @@ public class PatternParallelFire : PatternAttachable
                 yield return new WaitForSeconds(delay);
         }
 
+        blockBulletFire = false;
         isPatternRunning = false;
     }
 }

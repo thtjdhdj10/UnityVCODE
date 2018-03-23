@@ -4,46 +4,46 @@ using UnityEngine;
 
 public class EnemyUnit : DynamicUnit
 {
-    public bool useChromaHP = true;
+//    public bool useChromaHP = true;
 
-    private void OnChangeHP()
-    {
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        CollisionComponent collisionComponent = GetComponent<CollisionComponent>();
+//    private void OnChangeHP()
+//    {
+//        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+//        CollisionComponent collisionComponent = GetComponent<CollisionComponent>();
 
-        float hpRemainRatio = (float)collisionComponent.maxHP / (float)collisionComponent.CurrentHP;
+//        float hpRemainRatio = (float)collisionComponent.maxHP / (float)collisionComponent.CurrentHP;
 
-        spriteRenderer.color = new Color(hpRemainRatio, hpRemainRatio * 0.06f, hpRemainRatio * 0.03f, 1f);
+//        spriteRenderer.color = new Color(hpRemainRatio, hpRemainRatio * 0.06f, hpRemainRatio * 0.03f, 1f);
 
-//        spriteRenderer.
-    }
+////        spriteRenderer.
+//    }
 
-    public override void Init()
-    {
-        base.Init();
+//    public override void Init()
+//    {
+//        base.Init();
 
-        OnChangeHP();
-    }
+//        OnChangeHP();
+//    }
 
-    public override void OnLoseHP()
-    {
-        base.OnLoseHP();
+//    public override void OnLoseHP()
+//    {
+//        base.OnLoseHP();
 
-        OnChangeHP();
-    }
+//        OnChangeHP();
+//    }
 
-    public override void OnHealHP()
-    {
-        base.OnHealHP();
+//    public override void OnHealHP()
+//    {
+//        base.OnHealHP();
 
-        OnChangeHP();
-    }
+//        OnChangeHP();
+//    }
 
     public override bool SearchTarget()
     {
-        defaultTarget = FindObjectOfType<PlayerUnit>();
+        target = FindObjectOfType<PlayerUnit>();
 
-        return defaultTarget != null;
+        return target != null;
     }
 
 }

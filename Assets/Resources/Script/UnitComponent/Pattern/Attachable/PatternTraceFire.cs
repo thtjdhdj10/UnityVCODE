@@ -20,7 +20,7 @@ public class PatternTraceFire : PatternAttachable {
 
     public TraceType type;
 
-    protected override IEnumerator OnStartPattern()
+    protected override IEnumerator PatternFramework()
     {
         isPatternRunning = true;
 
@@ -53,6 +53,7 @@ public class PatternTraceFire : PatternAttachable {
             }
         }
 
+        blockBulletFire = false;
         isPatternRunning = false;
     }
 }

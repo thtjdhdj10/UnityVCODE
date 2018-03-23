@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boss : EnemyUnit{
+public class BossDeathStar : Boss
+{
 
 
 

@@ -12,7 +12,7 @@ public class PatternRandomFire : PatternAttachable
     public float delay;
     public float fireAngle;
 
-    protected override IEnumerator OnStartPattern()
+    protected override IEnumerator PatternFramework()
     {
         isPatternRunning = true;
 
@@ -43,6 +43,7 @@ public class PatternRandomFire : PatternAttachable
                 yield return new WaitForSeconds(delay);
         }
 
+        blockBulletFire = false;
         isPatternRunning = false;
     }
 }

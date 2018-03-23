@@ -11,7 +11,22 @@ public class PatternCircleFire : PatternAttachable
     public float fireAngle = 35f;
     public float delay = 0.1f;
 
-    protected override IEnumerator OnStartPattern()
+    public void Init(Bullet bullet, GameObject posRoot, GameObject dirRoot, bool attachPos, bool attachDir,
+        int _count, float _fireAngle, float _delay)
+    {
+        bulletPrefab = bullet;
+
+        positionRoot = posRoot;
+        directionRoot = dirRoot;
+        attachPositionToRoot = attachPos;
+        attachDirectionToRoot = attachDir;
+
+        count = _count;
+        fireAngle = _fireAngle;
+        delay = _delay;
+    }
+
+    protected override IEnumerator PatternFramework()
     {
         isPatternRunning = true;
 
@@ -39,6 +54,7 @@ public class PatternCircleFire : PatternAttachable
                 yield return new WaitForSeconds(delay);
         }
 
+        blockBulletFire = false;
         isPatternRunning = false;
     }
 

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class Action : MonoBehaviour
 {
-    // 
     public static Dictionary<MyObject, List<Action>> actionsDic = new Dictionary<MyObject, List<Action>>();
 
     public static void Activate(MyObject caster, ActionData actionData)

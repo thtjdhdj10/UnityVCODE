@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Bullet : Unit
 {
-    [System.NonSerialized]
     public Unit owner;
+
+    public bool allyBullet = false;
 
     public virtual void Init(ProjectileComponent projector, Vector2 relativePosition, float relativeDirection)
     {
@@ -13,7 +14,7 @@ public class Bullet : Unit
         MovementComponent ownerMovement = owner.GetComponent<MovementComponent>();
         MovementComponent movement = GetComponent<MovementComponent>();
 
-        defaultTarget = owner.defaultTarget;
+        target = owner.target;
 
         switch (projector.targetType)
         {

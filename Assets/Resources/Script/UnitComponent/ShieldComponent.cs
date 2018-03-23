@@ -6,8 +6,6 @@ public class ShieldComponent : UnitComponent
 {
     public override void Init()
     {
-        base.Init();
-
         restTimeToShield = 0f;
 
         ShieldCount = 0;
@@ -28,11 +26,11 @@ public class ShieldComponent : UnitComponent
         {
             if(value > shieldCount)
             {
-                owner.OnGenerateShield();
+                OnGenerateShield();
             }
             else if(value < shieldCount)
             {
-                owner.OnDestroyShield();
+                OnDestroyShield();
             }
             else
             {
@@ -94,4 +92,13 @@ public class ShieldComponent : UnitComponent
         }
     }
 
+    protected virtual void OnGenerateShield()
+    {
+
+    }
+
+    protected virtual void OnDestroyShield()
+    {
+
+    }
 }

@@ -6,9 +6,9 @@ public class Module : DynamicUnit
 {
     public MovementComponent hoverMovementComponent;
 
-    public Unit moduleOwner;
+    public Unit owner;
 
-    private void Awake()
+    protected override void Awake()
     {
         if(hoverMovementComponent == null)
         {
@@ -23,9 +23,9 @@ public class Module : DynamicUnit
         }
     }
 
-    public void Init(Unit _moduleOwner)
+    public void Init(Unit _owner)
     {
-        moduleOwner = _moduleOwner;
+        owner = _owner;
     }
 
     public void SetHover(bool enableHover)

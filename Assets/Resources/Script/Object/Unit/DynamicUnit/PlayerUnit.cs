@@ -5,16 +5,10 @@ using UnityEngine;
 public class PlayerUnit : DynamicUnit
 {
 
-
-
-
-
-
-
-    public override void OnDestroyShield()
-    {
-        CustomLog.CompleteLog("Player DestroyedShield HP");
-    }
+    //public override void OnDestroyShield()
+    //{
+    //    CustomLog.CompleteLog("Player Shield Destroyed");
+    //}
 
     public override void OnLoseHP()
     {

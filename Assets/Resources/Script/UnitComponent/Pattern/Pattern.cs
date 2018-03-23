@@ -21,16 +21,26 @@ public abstract class Pattern : MonoBehaviour
 
     public void PatternActivate()
     {
-        StartCoroutine(OnStartPattern());
+        StartCoroutine(PatternFramework());
     }
 
     public void PatternActivate(Pattern _prevPattern)
     {
         prevPattern = _prevPattern;
-        StartCoroutine(OnStartPattern());
+        StartCoroutine(PatternFramework());
     }
 
-    protected abstract IEnumerator OnStartPattern();
+    protected abstract IEnumerator PatternFramework();
 
+    public void ForceStopPattern()
+    {
+        isPatternRunning = false;
+        blockBulletFire = false;
+        StopCoroutine(PatternFramework());
+    }
 
+    protected virtual void OnPatternStop()
+    {
+        // 총알 없애거나 뭐 그런거
+    }
 }

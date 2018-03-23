@@ -34,7 +34,7 @@ public class GameStatusDisplay : MonoBehaviour
 
         {
             fpsText = AddText("");
-            unitCountText = AddText("");
+//            unitCountText = AddText("");
         }
     }
 
@@ -45,7 +45,7 @@ public class GameStatusDisplay : MonoBehaviour
         string text = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
         fpsText.text = text;
 
-        unitCountText.text = Unit.unitList.Count.ToString();
+//        unitCountText.text = Unit.unitList.Count.ToString();
     }
     
     // text 를 갱신하려면, 인자의 text 를 수정할 것.

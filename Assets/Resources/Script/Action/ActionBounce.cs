@@ -4,20 +4,20 @@ using UnityEngine;
 
 public class ActionBounce : Action
 {
-    public string targetTypeName;
-
-    public enum Type
+    public enum BounceProcessType
     {
         NONE,
         TO_TARGET, // target 을 향하게 direction 갱신
         TO_TARGET_REVERSE, // target 방향의 반대로 향하게
         REVERSE, // 방향 180도 전환
-        WALL_REFLECT, // 거울반사
-        WALL_DESTROY, // 벽충돌 시 1초후 destroy
+        REFLECT, // 거울반사
+        DESTROY, // 벽충돌 시 1초후 destroy
         BLOCK, // 길막만 함
     }
 
-    public Type type;
+    public BounceProcessType bounceProcessType;
+
+    public Unit.UnitType targetType;
 
     public float destroyDelay = 1f;
 
@@ -26,24 +26,12 @@ public class ActionBounce : Action
         if (hr.IsValid() == false)
             return;
 
-        BounceProcess(hr, type);
+        BounceProcess(hr, bounceProcessType);
     }
 
-    private void BounceProcess(HitResult hr, Type _type)
+    private void BounceProcess(HitResult hr, BounceProcessType _type)
     {
         Unit owner = GetComponent<Unit>();
-
-        System.Type bounceTargetType =
-            System.Type.GetType(hr.owner.defaultTargetTypeName); // Bounce 처리할 대상의 타입
-
-        if (bounceTargetType == null)
-            bounceTargetType = System.Type.GetType(targetTypeName);
-
-        if (bounceTargetType == null)
-            return;
-
-        if(bounceTargetType.IsSubclassOf(hr.target.GetType()) == false)
-            return;
 
         MovementComponent ownerMovable = hr.owner.GetComponent<MovementComponent>();
 
@@ -52,7 +40,7 @@ public class ActionBounce : Action
 
         switch (_type)
         {
-            case Type.WALL_REFLECT:
+            case BounceProcessType.REFLECT:
                 {
                     Wall hitWall = hr.target as Wall;
                     if (hitWall == null)
@@ -90,7 +78,7 @@ public class ActionBounce : Action
                     }
                 }
                 break;
-            case Type.WALL_DESTROY:
+            case BounceProcessType.DESTROY:
                 {
                     Wall hitWall = hr.target as Wall;
                     if (hitWall == null)
@@ -99,36 +87,36 @@ public class ActionBounce : Action
                     StartCoroutine(DelayedDestroy(destroyDelay));
                 }
                 break;
-            case Type.REVERSE:
+            case BounceProcessType.REVERSE:
                 {
                     ownerMovable.Direction += 180f;
                 }
                 break;
-            case Type.TO_TARGET:
+            case BounceProcessType.TO_TARGET:
                 {
-                    if (owner.defaultTarget == null)
+                    if (owner.target == null)
                     {
-                        BounceProcess(hr, Type.REVERSE);
+                        BounceProcess(hr, BounceProcessType.REVERSE);
                         return;
                     }
 
-                    float dirToTarget = VEasyCalculator.GetDirection(ownerMovable.owner, ownerMovable.owner.defaultTarget);
+                    float dirToTarget = VEasyCalculator.GetDirection(ownerMovable.owner, ownerMovable.owner.target);
                     ownerMovable.Direction = dirToTarget;
                 }
                 break;
-            case Type.TO_TARGET_REVERSE:
+            case BounceProcessType.TO_TARGET_REVERSE:
                 {
-                    if (owner.defaultTarget == null)
+                    if (owner.target == null)
                     {
-                        BounceProcess(hr, Type.REVERSE);
+                        BounceProcess(hr, BounceProcessType.REVERSE);
                         return;
                     }
 
-                    float dirToTarget = VEasyCalculator.GetDirection(ownerMovable.owner, ownerMovable.owner.defaultTarget);
+                    float dirToTarget = VEasyCalculator.GetDirection(ownerMovable.owner, ownerMovable.owner.target);
                     ownerMovable.Direction = dirToTarget + 180f;
                 }
                 break;
-            case Type.BLOCK:
+            case BounceProcessType.BLOCK:
                 {
                     // TODO: position 만 충돌 반대 방향으로 밈
                 }
