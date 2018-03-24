@@ -4,32 +4,6 @@ using UnityEngine;
 
 public class PatternComponent : UnitComponent
 {
-<<<<<<< HEAD
-    public Pattern[] pattern;
-
-    public bool patternWork;
-
-    public enum PatternSelectType
-    {
-        RANDOMLY,
-        SEQUENCY,
-
-    }
-
-    private void FixedUpdate()
-    {
-        if(patternWork == false)
-        {
-            SelectNextPattern();
-        }
-    }
-
-    public Pattern SelectNextPattern()
-    {
-
-    }
-
-=======
     public Queue<Pattern> patternQueue = new Queue<Pattern>();
 
     public List<Pattern> patterns = new List<Pattern>();
@@ -73,6 +47,4 @@ public class PatternComponent : UnitComponent
             }
         }
     }
->>>>>>> 60b59ab9b81cd290aa78eb129c10fd3b0773703f
-
 }
