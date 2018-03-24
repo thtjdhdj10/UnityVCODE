@@ -50,8 +50,6 @@ public class ProjectileComponent : UnitComponent
 
     public override void Init()
     {
-        base.Init();
-
         RemainCooldown = cooldown;
     }
 
@@ -100,7 +98,7 @@ public class ProjectileComponent : UnitComponent
         {
             case TargetType.UNIT:
                 {
-                    _bullet.defaultTarget = owner.defaultTarget;
+                    _bullet.owner.target = owner.target;
                 }
                 break;
             case TargetType.LOCATION:

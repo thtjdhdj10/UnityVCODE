@@ -37,9 +37,7 @@ public class CollisionComponent : UnitComponent
             if (IsImmune() == true)
                 return;
 
-            System.Type targetType = System.Type.GetType(targetTypeName);
-
-            if (targetType.IsSubclassOf(col.type.GetType()) == true)
+            if (Unit.IsChildTypeOf(targetType, col.owner.unitType))
             {
                 col.BeHit(this);
             }
@@ -70,8 +68,6 @@ public class CollisionComponent : UnitComponent
 
     public override void Init()
     {
-        base.Init();
-
         currentHP = maxHP;
 
         if (mainCollider == null)
@@ -134,7 +130,7 @@ public class CollisionComponent : UnitComponent
 
     public bool isHittable;
 
-    public string targetTypeName; // TODO editor 로, is hittable 이 true일 때만 노출
+    public Unit.UnitType targetType; // TODO editor 로, is hittable 이 true일 때만 노출
 
     public DamageEffectType damageEffectType;
 

@@ -15,7 +15,7 @@ public class CollisionComponentEditor : Editor
     
     SerializedProperty isHittableProp;
     
-    SerializedProperty targetTypeNameProp;
+    SerializedProperty targetTypeProp;
     SerializedProperty damageEffectTypeProp;
     SerializedProperty damageProp;
 
@@ -43,7 +43,7 @@ public class CollisionComponentEditor : Editor
 
         isBeHittableProp = serializedObject.FindProperty("isBeHittable");
 
-        targetTypeNameProp = serializedObject.FindProperty("targetTypeName");
+        targetTypeProp = serializedObject.FindProperty("targetType");
         damageEffectTypeProp = serializedObject.FindProperty("damageEffectType");
 
         damageProp = serializedObject.FindProperty("damage");
@@ -79,7 +79,7 @@ public class CollisionComponentEditor : Editor
 
         if (isHittableProp.boolValue == true)
         {
-            EditorGUILayout.PropertyField(targetTypeNameProp);
+            EditorGUILayout.PropertyField(targetTypeProp);
             EditorGUILayout.PropertyField(damageEffectTypeProp);
             EditorGUILayout.PropertyField(damageProp);
         }

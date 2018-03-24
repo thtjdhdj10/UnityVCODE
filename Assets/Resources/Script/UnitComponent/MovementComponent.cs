@@ -101,31 +101,10 @@ public class MovementComponent : UnitComponent
 
     public override void Init()
     {
-        base.Init();
-
-        if(owner == null)
+        if (initRotateToTarget == true)
         {
-            owner = GetComponent<Unit>();
-        }
-
-        if(initRotateToTarget == true)
-        {
-            UpdateTarget();
-
-            if (componentTarget != null &&
-                owner != null)
-            {
-                Direction = VEasyCalculator.GetDirection(owner, componentTarget);
-            }
-        }
-    }
-
-    public void UpdateTarget()
-    {
-        if(useDefaultTarget == true &&
-            owner != null)
-        {
-            componentTarget = owner.defaultTarget;
+            if (owner.target != null)
+                Direction = VEasyCalculator.GetDirection(owner, owner.target);
         }
     }
 
@@ -154,8 +133,6 @@ public class MovementComponent : UnitComponent
             Speed = Speed * speedModulateFactor;
         }
 
-        UpdateTarget();
-
         switch (_movementType)
         {
             case MovementType.STRAIGHT:
@@ -170,7 +147,7 @@ public class MovementComponent : UnitComponent
                 break;
             case MovementType.TURN_LERP:
                 {
-                    if (componentTarget == null)
+                    if (owner.target == null)
                     {
                         MovementProcess(MovementType.STRAIGHT);
 
@@ -182,7 +159,7 @@ public class MovementComponent : UnitComponent
 
                     float moveDis = speed * Time.fixedDeltaTime;
 
-                    float dirToTarget = VEasyCalculator.GetDirection(owner, componentTarget);
+                    float dirToTarget = VEasyCalculator.GetDirection(owner, owner.target);
 
                     float deltaDir = VEasyCalculator.GetLerpDirection(
                         direction, dirToTarget, turnFactor * Time.fixedDeltaTime) - direction;
@@ -200,7 +177,7 @@ public class MovementComponent : UnitComponent
                 break;
             case MovementType.TURN_LERP_BY_DISTANCE:
                 {
-                    if (componentTarget == null)
+                    if (owner.target == null)
                     {
                         MovementProcess(MovementType.STRAIGHT);
 
@@ -212,9 +189,9 @@ public class MovementComponent : UnitComponent
 
                     float moveDis = speed * Time.fixedDeltaTime;
 
-                    float dirToPlayer = VEasyCalculator.GetDirection(owner, componentTarget);
+                    float dirToPlayer = VEasyCalculator.GetDirection(owner, owner.target);
 
-                    float disToPlayer = VEasyCalculator.GetDistance(componentTarget, owner);
+                    float disToPlayer = VEasyCalculator.GetDistance(owner.target, owner);
 
                     float deltaDir = VEasyCalculator.GetLerpDirection(
                         direction, dirToPlayer, turnFactor * Time.fixedDeltaTime,
@@ -233,7 +210,7 @@ public class MovementComponent : UnitComponent
                 break;
             case MovementType.TURN_REGULAR:
                 {
-                    if (componentTarget == null)
+                    if (owner.target == null)
                     {
                         MovementProcess(MovementType.STRAIGHT);
 
@@ -245,7 +222,7 @@ public class MovementComponent : UnitComponent
 
                     float moveDis = speed * Time.fixedDeltaTime;
 
-                    float dirToTarget = VEasyCalculator.GetDirection(owner, componentTarget);
+                    float dirToTarget = VEasyCalculator.GetDirection(owner, owner.target);
 
                     Direction = VEasyCalculator.GetTurningDirection(
                         direction, dirToTarget, turnFactor * Time.fixedDeltaTime);
@@ -258,7 +235,7 @@ public class MovementComponent : UnitComponent
                 break;
             case MovementType.TURN_REGULAR_DISTANCE:
                 {
-                    if (componentTarget == null)
+                    if (owner.target == null)
                     {
                         MovementProcess(MovementType.STRAIGHT);
 
@@ -270,9 +247,9 @@ public class MovementComponent : UnitComponent
 
                     float moveDis = speed * Time.fixedDeltaTime;
 
-                    float dirToPlayer = VEasyCalculator.GetDirection(owner, componentTarget);
+                    float dirToPlayer = VEasyCalculator.GetDirection(owner, owner.target);
 
-                    float disToPlayer = VEasyCalculator.GetDistance(componentTarget, owner);
+                    float disToPlayer = VEasyCalculator.GetDistance(owner.target, owner);
 
                     Direction = VEasyCalculator.GetTurningDirection(
                         direction, dirToPlayer, turnFactor * Time.fixedDeltaTime,

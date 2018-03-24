@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class PatternComponent : UnitComponent
 {
-    public Queue<Pattern> patternQueue = new Queue<Pattern>();
-
     public List<Pattern> patterns = new List<Pattern>();
+    public Queue<Pattern> patternQueue = new Queue<Pattern>();
 
     private Pattern lastActivatedPattern;
 

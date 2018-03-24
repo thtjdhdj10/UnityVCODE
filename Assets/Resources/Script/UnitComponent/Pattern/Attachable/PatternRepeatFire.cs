@@ -10,7 +10,7 @@ public class PatternRepeatFire : PatternAttachable
     public int count;
     public float delay;
 
-    protected override IEnumerator OnStartPattern()
+    protected override IEnumerator PatternFramework()
     {
         isPatternRunning = true;
 
@@ -36,6 +36,7 @@ public class PatternRepeatFire : PatternAttachable
                 yield return new WaitForSeconds(delay);
         }
 
+        blockBulletFire = false;
         isPatternRunning = false;
     }
 }

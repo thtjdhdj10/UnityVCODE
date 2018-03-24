@@ -293,6 +293,8 @@ public class VEasyCalculator
 
     public static float GetDirection(Unit from, Unit to)
     {
+        if (from == null || to == null) return 0f;
+
         return GetDirection(from.transform.position, to.transform.position);
     }
 

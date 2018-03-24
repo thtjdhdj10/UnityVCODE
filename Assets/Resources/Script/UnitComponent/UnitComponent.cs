@@ -1,11 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-/* 
- * 각 Operable 은 static 으로 동종의 Operable List 를 가짐.
- * ( Operable 순회 작업을 쉽게 하기 위하여 )
- */
-
 public class UnitComponent : MonoBehaviour
 {
     [System.NonSerialized]
@@ -13,23 +8,6 @@ public class UnitComponent : MonoBehaviour
 
     [System.NonSerialized]
     public ComponentType type;
-
-    public Unit componentTarget;
-
-    public bool useDefaultTarget = true;
-
-    public virtual void Init()
-    {
-        owner = GetComponent<Unit>();
-
-        activatedDic[ActivatingType.OWNER] = owner.Activated;
-
-        componentTarget = null;
-        if (useDefaultTarget == true)
-        {
-            componentTarget = owner.defaultTarget;
-        }
-    }
 
     // UnitComponent 들은 activate 에 의해 on/off 될 수 있음.
     // Shield 의 경우, 일정 시간마다 재생성되는 로직이 on/off 되고, Collision 은 충돌처리를 하거나 안하거나 하는 식.
@@ -65,46 +43,53 @@ public class UnitComponent : MonoBehaviour
         SHIELD,
     }
 
+    public virtual void Init()
+    {
+
+    }
+
     protected virtual void Awake()
     {
+        owner = GetComponent<Unit>();
+
         Init();
 
-        if (this is MovementComponent)
-            type = ComponentType.MOVEMENT;
-        else if (this is CollisionComponent)
-            type = ComponentType.COLLISION;
-        else if (this is ControlComponent)
-            type = ComponentType.CONTROL;
-        else if (this is PatternComponent)
-            type = ComponentType.PATTERN;
-        else if (this is ProjectileComponent)
-            type = ComponentType.PROJECTILE;
-        else if (this is ShieldComponent)
-            type = ComponentType.SHIELD;
-        else
-            type = ComponentType.NONE;
+        //if (this is MovementComponent)
+        //    type = ComponentType.MOVEMENT;
+        //else if (this is CollisionComponent)
+        //    type = ComponentType.COLLISION;
+        //else if (this is ControlComponent)
+        //    type = ComponentType.CONTROL;
+        //else if (this is PatternComponent)
+        //    type = ComponentType.PATTERN;
+        //else if (this is ProjectileComponent)
+        //    type = ComponentType.PROJECTILE;
+        //else if (this is ShieldComponent)
+        //    type = ComponentType.SHIELD;
+        //else
+        //    type = ComponentType.NONE;
 
-        if (type == ComponentType.NONE)
-        {
-            Destroy(this);
-            return;
-        }
+        //if (type == ComponentType.NONE)
+        //{
+        //    Destroy(this);
+        //    return;
+        //}
 
-        if(OperableListDic.ContainsKey(type) == false)
-        {
-            OperableListDic.Add(type, new List<UnitComponent>());
-        }
+        //if(OperableListDic.ContainsKey(type) == false)
+        //{
+        //    OperableListDic.Add(type, new List<UnitComponent>());
+        //}
 
-        OperableListDic[type].Add(this);
+        //OperableListDic[type].Add(this);
     }
 
-    public static Dictionary<ComponentType, List<UnitComponent>> OperableListDic = new Dictionary<ComponentType, List<UnitComponent>>();
+    //public static Dictionary<ComponentType, List<UnitComponent>> OperableListDic = new Dictionary<ComponentType, List<UnitComponent>>();
 
-    protected virtual void OnDestroy()
-    {
-        if(OperableListDic.ContainsKey(type) == true)
-        {
-            OperableListDic[type].Remove(this);
-        }
-    }
+    //protected virtual void OnDestroy()
+    //{
+    //    if(OperableListDic.ContainsKey(type) == true)
+    //    {
+    //        OperableListDic[type].Remove(this);
+    //    }
+    //}
 }

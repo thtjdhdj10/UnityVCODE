@@ -6,9 +6,7 @@ public class ShieldComponent : UnitComponent
 {
     public override void Init()
     {
-        base.Init();
-
-        remainChargeDelay = 0f;
+        restTimeToShield = 0f;
 
         ShieldCount = 0;
 
@@ -28,11 +26,11 @@ public class ShieldComponent : UnitComponent
         {
             if(value > shieldCount)
             {
-                owner.OnGenerateShield();
+                OnGenerateShield();
             }
             else if(value < shieldCount)
             {
-                owner.OnDestroyShield();
+                OnDestroyShield();
             }
             else
             {
@@ -43,29 +41,18 @@ public class ShieldComponent : UnitComponent
         }
     }
 
-    public float shieldChargeDelay;
+    public float timeToShield;
 
-    private float remainChargeDelay;
-    private float RemainChargeDelay
+    private float restTimeToShield;
+    public float RestTimeToShield
     {
         get
         {
-            return remainChargeDelay;
+            return restTimeToShield;
         }
         set
         {
-            remainChargeDelay = value;
-
-            if(remainChargeDelay < 0f)
-            {
-                ShieldCount += 1;
-
-                remainChargeDelay = 0f;
-
-                return;
-            }
-
-            remainChargeDelay = Mathf.Min(value, shieldChargeDelay);
+            restTimeToShield = VEasyCalculator.MinMax(value, 0f, timeToShield);
         }
     }
 
@@ -78,7 +65,16 @@ public class ShieldComponent : UnitComponent
 
         if(ShieldCount < maxShieldCount)
         {
-            RemainChargeDelay -= Time.fixedDeltaTime;
+            if(RestTimeToShield < timeToShield)
+            {
+                RestTimeToShield += Time.fixedDeltaTime;
+            }
+            else
+            {
+                ShieldCount += 1;
+
+                RestTimeToShield = 0f;
+            }
         }
     }
 
@@ -96,4 +92,13 @@ public class ShieldComponent : UnitComponent
         }
     }
 
+    protected virtual void OnGenerateShield()
+    {
+
+    }
+
+    protected virtual void OnDestroyShield()
+    {
+
+    }
 }
