@@ -14,25 +14,26 @@ public abstract class PatternAttachable : Pattern
     protected Vector2 position;
     protected float direction;
 
-    void Awake()
+    public PatternAttachable(Unit _owner)
+        : base(_owner)
     {
         if (positionRoot == null)
-            positionRoot = gameObject;
+            positionRoot = owner.gameObject;
 
         position = positionRoot.transform.position;
 
         if (directionRoot == null)
-            directionRoot = gameObject;
+            directionRoot = owner.gameObject;
 
         direction = directionRoot.transform.eulerAngles.z;
     }
 
-    private void FixedUpdate()
-    {
-        if (attachPositionToRoot == true)
-            position = positionRoot.transform.position;
+    //private void FixedUpdate()
+    //{
+    //    if (attachPositionToRoot == true)
+    //        position = positionRoot.transform.position;
 
-        if (attachDirectionToRoot == true)
-            direction = directionRoot.transform.eulerAngles.z;
-    }
+    //    if (attachDirectionToRoot == true)
+    //        direction = directionRoot.transform.eulerAngles.z;
+    //}
 }

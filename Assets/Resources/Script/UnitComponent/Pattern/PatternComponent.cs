@@ -18,10 +18,10 @@ public class PatternComponent : UnitComponent
     {
         if (patternQueue.Count == 0) // 패턴을 다 실행했으면 새로 채워넣음
         {
-            Pattern selectPattern = null;
+            Pattern selectPattern = patterns[Random.Range(0, patterns.Count - 1)];
 
             while (selectPattern != null &&
-                selectPattern != lastActivatedPattern) // 마지막에 발동한 패턴이 연속으로 발동되지 않도록 처리
+                selectPattern == lastActivatedPattern) // 마지막에 발동한 패턴이 연속으로 발동되지 않도록 처리
             {
                 selectPattern = patterns[Random.Range(0, patterns.Count - 1)]; // select random pattern
             }
@@ -41,8 +41,16 @@ public class PatternComponent : UnitComponent
         {
             if (patternQueue.Peek().isPatternRunning == false)
             {
-                lastActivatedPattern = patternQueue.Dequeue();
-                lastActivatedPattern.PatternActivate();
+                if(patternQueue.Peek() != lastActivatedPattern)
+                {
+                    lastActivatedPattern = patternQueue.Peek();
+                    lastActivatedPattern.PatternActivate();
+                }
+                else
+                {
+                    patterns.Add(lastActivatedPattern);
+                    patternQueue.Dequeue();
+                }
             }
         }
     }

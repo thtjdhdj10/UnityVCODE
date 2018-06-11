@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public abstract class Pattern : MonoBehaviour
+public abstract class Pattern
 {
     public Unit owner;
 
@@ -13,31 +13,29 @@ public abstract class Pattern : MonoBehaviour
 
     protected Pattern prevPattern;
 
-    private void Awake()
+    private Pattern()
     {
-        if (owner == null)
-            owner = GetComponent<Unit>();
+
     }
 
-    public void PatternActivate()
+    public Pattern(Unit _owner)
     {
-        StartCoroutine(PatternFramework());
+        owner = _owner;
     }
 
     public void PatternActivate(Pattern _prevPattern)
     {
         prevPattern = _prevPattern;
-        StartCoroutine(PatternFramework());
     }
 
     protected abstract IEnumerator PatternFramework();
 
-    public void ForceStopPattern()
-    {
-        isPatternRunning = false;
-        blockBulletFire = false;
-        StopCoroutine(PatternFramework());
-    }
+    //public void ForceStopPattern()
+    //{
+    //    isPatternRunning = false;
+    //    blockBulletFire = false;
+    //    StopCoroutine(PatternFramework());
+    //}
 
     protected virtual void OnPatternStop()
     {

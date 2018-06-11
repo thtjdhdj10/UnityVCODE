@@ -7,9 +7,9 @@ public class PatternCircleFire : PatternAttachable
     public Bullet bulletPrefab;
     public List<Bullet> spawnedBulletList = new List<Bullet>();
 
-    public int count = 5;
-    public float fireAngle = 35f;
-    public float delay = 0.1f;
+    public int count;
+    public float fireAngle;
+    public float delay;
 
     public void Init(Bullet bullet, GameObject posRoot, GameObject dirRoot, bool attachPos, bool attachDir,
         int _count, float _fireAngle, float _delay)
@@ -36,11 +36,11 @@ public class PatternCircleFire : PatternAttachable
             {
                 float targetDirection = direction - fireAngle * 0.5f + fireAngle * i / (count - 1);
 
-                Bullet bulletInstance = Instantiate(bulletPrefab);
+                Bullet bulletInstance = MonoBehaviour.Instantiate(bulletPrefab);
 
                 MovementComponent move = bulletInstance.GetComponent<MovementComponent>();
                 if (move == null)
-                    Destroy(bulletInstance);
+                    MonoBehaviour.Destroy(bulletInstance);
 
                 bulletInstance.owner = owner;
 

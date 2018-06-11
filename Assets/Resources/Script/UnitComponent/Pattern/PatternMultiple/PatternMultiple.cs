@@ -10,6 +10,12 @@ public class PatternMultiple : Pattern
     {
         public float waitForActivate;
         public Pattern pattern;
+
+        public PatternTimeStamp(float _waitForActivate, Pattern _pattern)
+        {
+            waitForActivate = _waitForActivate;
+            pattern = _pattern;
+        }
     }
 
     public List<PatternTimeStamp> patternTimeStamps = new List<PatternTimeStamp>();
@@ -20,15 +26,12 @@ public class PatternMultiple : Pattern
         {
             yield return new WaitForSeconds(patternTimeStamps[i].waitForActivate);
 
-            if (i < patternTimeStamps.Count)
+            if (patternTimeStamps[i].pattern != null)
             {
-                if (patternTimeStamps[i].pattern != null)
-                {
-                    if (i > 0)
-                        patternTimeStamps[i].pattern.PatternActivate(patternTimeStamps[i - 1].pattern);
-                    else
-                        patternTimeStamps[i].pattern.PatternActivate();
-                }
+                if (i > 0)
+                    patternTimeStamps[i].pattern.PatternActivate(patternTimeStamps[i - 1].pattern);
+                else
+                    patternTimeStamps[i].pattern.PatternActivate();
             }
         }
     }
